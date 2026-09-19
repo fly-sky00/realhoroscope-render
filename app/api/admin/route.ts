@@ -18,7 +18,7 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const kind = url.searchParams.get("kind") === "comments" ? "comments" : "messages";
-  const before = Number(url.searchParams.get("before") || Number.MAX_SAFE_INTEGER);
+  const before = Number(url.searchParams.get("before") || 2147483647);
   if (!Number.isSafeInteger(before) || before < 1) {
     return Response.json({ error: "Geçersiz sayfa." }, { status: 400, headers: noStore });
   }
