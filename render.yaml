@@ -5,8 +5,8 @@ services:
     plan: free
     region: frankfurt
     buildCommand: pnpm install --frozen-lockfile && pnpm build
-    preDeployCommand: pnpm db:migrate
-    startCommand: pnpm start
+    
+    startCommand: pnpm db:migrate && pnpm start
     healthCheckPath: /
     autoDeployTrigger: commit
     envVars:
