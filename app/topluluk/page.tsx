@@ -1,0 +1,5 @@
+import type { Metadata } from "next";
+import { CommunityBoard } from "@/components/community-board";
+
+export const metadata:Metadata={title:"Topluluk Geri Bildirimleri",description:"RealHoroscope araçları ve rehberleri hakkında yapıcı, moderasyonlu kullanıcı geri bildirimleri.",alternates:{canonical:"/topluluk"},robots:{index:false,follow:true}};
+export default function CommunityPage(){return <main id="ana-icerik" className="page-main"><div className="site-shell"><header className="max-w-3xl"><p className="eyebrow">Moderasyonlu katkı alanı</p><h1 className="display mt-3 text-4xl sm:text-6xl">Topluluk notları</h1><p className="lede mt-5">Sorular ve deneyimler, kişisel veri, spam, hakaret ve sağlık/finans kehaneti kontrolünden sonra yayımlanır. Gönderim anında otomatik olarak görünmez.</p></header><div className="mt-9"><CommunityBoard/></div><div className="prose page-narrow mt-12"><h2>Moderasyon ölçütleri</h2><p>Konuya katkı sağlayan eleştiri ve farklı görüşler kabul edilir. E-posta, telefon, tam doğum verisi gibi kişisel bilgiler; reklam, kopya içerik, taciz ve kesin tedavi/yatırım iddiaları yayımlanmaz.</p></div></div></main>}

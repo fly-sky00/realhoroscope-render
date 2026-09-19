@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: realhoroscope
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: pnpm install --frozen-lockfile && pnpm build
+    preDeployCommand: pnpm db:migrate
+    startCommand: pnpm start
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://realhoroscope.online
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: realhoroscope-db
+          property: connectionString
+
+databases:
+  - name: realhoroscope-db
+    plan: free
+    region: frankfurt
+    databaseName: realhoroscope
+    user: realhoroscope
