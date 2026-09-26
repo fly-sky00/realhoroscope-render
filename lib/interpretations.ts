@@ -1,4 +1,5 @@
 import { rootReadings } from './root-readings';
+import { rootIntegration } from './root-integration';
 import { signByIau } from './zodiac-data';
 import { readingPlacement, readingResult } from './reading-placement';
 import { chartSky } from './chart-sky';
@@ -87,12 +88,14 @@ export function emotionalReading(raw:BirthSkyResult):string{
 }
 export function growthReading(raw:BirthSkyResult):string{
  const sky=chartSky(raw),rootPlacement=readingPlacement(sky.desc,raw.utc),root=rootReadings[rootPlacement.iau],shadowPlacement=readingPlacement(sky.shadow,raw.utc),shadow=profiles[shadowPlacement.iau],dark=profiles[readingPlacement(sky.dark,raw.utc).iau],northPlacement=readingPlacement(sky.north,raw.utc),north=profiles[northPlacement.iau];
- return `${root?.short??'Kök Aks, geçmiş deneyimlerle gelişen saklı potansiyelinizi anlatır.'} ${rootPlacement.name} Kök Aks’ınız, bir zamanlar geliştirdiğiniz fakat bugün sıradan gördüğünüz bu beceriyi yeniden sahiplenmeye çağırır. ${shadowPlacement.name} Gölge Aks’ınızda ${shadow?.need??'farklı bir ihtiyaca yer açmak'} teması, kendinize yakıştırmadığınız yönü daha olgun bir biçimde kullanma dersidir. Duygusal yüzleşmelerde ${dark?.gift??'ihtiyacınızı açıkça ifade etmek'} size yeni bir cevap alanı açar. İlerlerken ${north?.gift??'alışılmış tepkinin dışına çıkmak'} niteliğini küçük fakat düzenli seçimlerle geliştirmeniz önemlidir.`;
+ const integrated=rootIntegration(rootPlacement.iau,raw.sun.iau);
+ if(integrated.same)return `${integrated.short} ${shadowPlacement.name} Gölge Aks, ${shadow?.need??'karşıt ihtiyacı tanımak'} temasını dengeye çağırır. Duygusal yüzleşmelerde ${dark?.gift??'ihtiyacınızı anlatmak'} size yeni bir alan açar.`;
+ return `${root?.short??'Kök Aks, içinizde taşıdığınız saklı potansiyeli anlatır.'} ${rootPlacement.name} Kök Aks’ınız, sıradan gördüğünüz bu beceriyi bilinçli kullanmaya çağırır. ${shadowPlacement.name} Gölge Aks’ınızda ${shadow?.need??'farklı bir ihtiyaca yer açmak'} teması, kendinize yakıştırmadığınız yönü daha olgun bir biçimde kullanma dersidir. Duygusal yüzleşmelerde ${dark?.gift??'ihtiyacınızı açıkça ifade etmek'} size yeni bir cevap alanı açar. İlerlerken ${north?.gift??'alışılmış tepkinin dışına çıkmak'} niteliğini küçük fakat düzenli seçimlerle geliştirmeniz önemlidir.`;
 }
 export function socialReading(raw:BirthSkyResult):string{
- const root=rootReadings[readingPlacement(chartSky(raw).desc,raw.utc).iau];
+ const root=rootIntegration(readingPlacement(chartSky(raw).desc,raw.utc).iau,raw.sun.iau);
  const r=readingResult(raw),s=profiles[r.sun.iau],m=profiles[r.moon.iau],a=profiles[r.ascendant.iau];
- return s&&m&&a?`Yolunuzu ${s.need} belirler. İç dünyanızda ${m.need} ararsınız. İnsanlara kattığınız güç: ${a.gift}. ${root?.short??''}`:'Gökyüzü yerleşimlerinizi ve kişisel yorumunuzu RealHoroscope’ta keşfedin.';
+ return s&&m&&a?`Yolunuzu ${s.need} besler. İç dünyanızda ${m.need} ararsınız. ${root.short}`:'Gökyüzü yerleşimlerinizi ve kişisel yorumunuzu RealHoroscope’ta keşfedin.';
 }
 export function birthReading(raw:BirthSkyResult):Reading[]{
  const result=readingResult(raw),sky=chartSky(raw),s=profiles[result.sun.iau],m=profiles[result.moon.iau],a=profiles[result.ascendant.iau];
@@ -101,7 +104,7 @@ export function birthReading(raw:BirthSkyResult):Reading[]{
  {title:'Haritanızın ana hikâyesi',text:printReading(raw)+(projected?` Ay yorumu, gerçek ${raw.moon.name} konumu korunarak ${result.moon.name} ekliptik izdüşüm profiliyle hazırlanmıştır.`:''),practice:practiceFor(result.sun.iau,'overview',result.moon.iau)},
  {title:`İstekleriniz ve duygularınız · ${result.sun.name} · ${result.moon.name}`,text:s&&m?`Güneş tarafınız “Nereye yöneliyorum?” sorusuna ${s.need} üzerinden cevap verir; Ay tarafınız ise “Nerede güvendeyim?” sorusunda ${m.need} arar. ${result.sun.iau===result.moon.iau?`Aynı ${result.sun.name} niteliği iki alanda da çalıştığı için kararınıza duygusal olarak hızla bağlanabilirsiniz. Güçlü tarafınız ${s.gift}; dikkat etmeniz gereken nokta ise ${m.risk} eğiliminin hem isteğinizi hem duygunuzu aynı anda yönetmesidir.`:`Bu iki yerleşim farklı şeyler istediğinde iç gerilim yaşayabilirsiniz. ${s.gift} gücünüz hedefi ilerletirken, Ay’ınızın ${m.need} ihtiyacını ertelememeniz gerekir. Duygusal baskıda ${m.risk} eğilimini fark etmek, isteğinizle ihtiyacınızı karşı karşıya getirmek yerine uzlaştırmanızı sağlar.`}`:printReading(raw),practice:practiceFor(result.moon.iau,'emotion')},
  {title:`İlk izlenim ve iç dünyanız · ${result.ascendant.name} · ${result.moon.name}`,text:a&&m?`Yükseleniniz yeni bir ortama ${a.gift} gücüyle girer; Ay’ınız yakınlık kurulduğunda ${m.need} arar. ${result.ascendant.iau===result.moon.iau?`${result.ascendant.name} vurgusu, dışarıdaki tavrınızla duygusal refleksinizi birbirine yaklaştırır. İnsanlar sizi kolay okuyabilir; buna karşılık ilk tepkinizin bütün ihtiyacınızı temsil ettiğini sanabilirsiniz. Duygunuzu bir adım daha ayrıntılı anlatmanız bu yoğun benzerliği dengeler.`:`İlk izleniminiz duygusal ihtiyacınızı bütünüyle göstermeyebilir. ${result.ascendant.name} tarafınızın yaklaşımı ile ${result.moon.name} tarafınızın güven arayışını açıkça bağlamak, “Böyle görünüyorsun ama başka hissediyorsun” türü yanlış anlamaları azaltır.`}`:printReading(raw),practice:practiceFor(result.ascendant.iau,'approach')},
- {title:`Kök Aks · ${sky.desc.name}`,text:rootReadings[readingPlacement(sky.desc,raw.utc).iau]?.text??'Kök Aks, geçmiş deneyimlerle gelişmiş, henüz yeterince fark edilmemiş potansiyeli anlatır.',practice:practiceFor(readingPlacement(sky.desc,raw.utc).iau,'root')},
+ {title:`Kök Aks · ${sky.desc.name}`,text:rootIntegration(readingPlacement(sky.desc,raw.utc).iau,result.sun.iau).text,practice:rootIntegration(readingPlacement(sky.desc,raw.utc).iau,result.sun.iau).practice??practiceFor(readingPlacement(sky.desc,raw.utc).iau,'root')},
  axis('Güneş–Gölge Aks hattı',sky.sun,sky.shadow,'Gölge Aks, kendinize yakıştırmadığınız veya başkalarında görünce güçlü tepki verdiğiniz yönleri tanımaya çağırır.',raw.utc,'shadow'),
  axis('Ay–Karanlık Ay Aksı · Duygu Ekseni',sky.moon,sky.dark,'Karanlık Ay Aksı, duygusal zıddınızı ve yüzleşme sınavınızı anlatır. Tanıdık savunmanızı fark etmek, karşıt ihtiyacı da anlayabilmenizin başlangıcıdır.',raw.utc,'dark'),
  axis('Ay düğümleri · Güneyden Kuzeye',sky.south,sky.north,'Güney düğüm alışılmış becerileri, Kuzey düğüm geliştirilecek yaklaşımı temsil eder.',raw.utc,'nodes'),

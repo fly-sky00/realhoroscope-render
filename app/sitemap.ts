@@ -14,6 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: route === "" ? 1 : (route === "/burclar" || route === "/rehber") ? 0.8 : 0.6,
     })),
     ...zodiacSigns.map((sign) => ({ url: `${base}/burclar/${sign.slug}`, lastModified: updated, changeFrequency: "monthly" as const, priority: 0.75 })),
-    ...articles.map((article) => ({ url: `${base}/rehber/${article.slug}`, lastModified: updated, changeFrequency: "monthly" as const, priority: 0.7 })),
+    ...articles.map((article) => ({ url: `${base}/rehber/${article.slug}`, lastModified: new Date(`${article.modifiedAt ?? '2026-09-19'}T00:00:00Z`), changeFrequency: "monthly" as const, priority: 0.7 })),
   ];
 }

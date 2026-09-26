@@ -1,3 +1,4 @@
+import { additionalArticles } from './articles-expanded';
 export type GuideArticle = {
   slug: string;
   title: string;
@@ -5,6 +6,10 @@ export type GuideArticle = {
   category: string;
   readTime: string;
   updated: string;
+  publishedAt?: string;
+  modifiedAt?: string;
+  sources?: { title: string; url: string }[];
+  related?: string[];
   sections: { heading: string; paragraphs: string[]; bullets?: string[] }[];
 };
 
@@ -144,6 +149,6 @@ const articleExpansions:Record<string,GuideArticle['sections']>={
   ]
 };
 
-export const articles: GuideArticle[] = articleDrafts.map(article => {const sections=[...article.sections,...(articleExpansions[article.slug]??[])];return {...article,sections,readTime:`${Math.max(1,Math.ceil(sections.flatMap(section=>[section.heading,...section.paragraphs,...(section.bullets??[])]).join(" ").split(/\s+/).length/180))} dk`};});
+export const articles: GuideArticle[] = [...articleDrafts,...additionalArticles].map(article => {const sections=[...article.sections,...(articleExpansions[article.slug]??[])];return {...article,publishedAt:article.publishedAt??'2026-09-13',modifiedAt:article.modifiedAt??'2026-09-19',sections,readTime:`${Math.max(1,Math.ceil(sections.flatMap(section=>[section.heading,...section.paragraphs,...(section.bullets??[])]).join(" ").split(/\s+/).length/180))} dk`};});
 
 export const articleBySlug = Object.fromEntries(articles.map((article) => [article.slug, article]));

@@ -1,4 +1,8 @@
+import { FullLink as Link } from './full-link';
 export function AxisMethod(){return <section className="prose mt-6">
+  <h2>Güneş ile Kök Aks aynı burçtaysa</h2>
+  <p>Kök Aks, Güneş’in değil yükselenin karşısından hesaplanır. Bu nedenle Güneş ve Kök Aks aynı takımyıldızda bulunabilir. Yorumda Güneş benliğinizde tanıdığınız yönü, Kök Aks ise içinizde mevcut olan ama henüz tam kullanmadığınız potansiyeli anlatır. Aynı adın tekrarı, bu yetenekte zaten ustalaştığınızı söylemez: gelişim, tanıdığınız niteliği bilinçli ve tutarlı kullanmayı öğrenmektir. Başka bir kişiliğe dönüşmeniz değil, kendi birikiminize daha fazla alan açmanız vurgulanır.</p>
+  <p>Kök Aks bir geçmiş yaşam kaydı değildir. Reenkarnasyon benzetmesi spiritüel bir yorum olarak kullanılabilir; hesap bunu doğrulamaz. <Link href="/rehber/gunes-kok-aks-ayni-burc">Güneş–Kök Aks eşleşmesini ayrıntılı okuyun →</Link></p>
   <h2>Ay Duygu Ekseni ve Karanlık Ay Aksı</h2>
   <p>Ay'ın konumu mevcut duygusal eğilimleri; tam karşıt noktası olan Karanlık Ay Aksı ise bu eğilimlerin zıddıyla yüzleşme ve gelişim sınavını sembolize eder. Bu, RealHoroscope'a özgü bir yorum modelidir; Lilith, yeniay ve Ay düğümleriyle aynı şey değildir. Kişiye kesin bir kader veya olay öngörüsü sunmaz.</p>
   <h2>Kuzey ve Güney Ay Düğümleri</h2>

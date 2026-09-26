@@ -24,8 +24,8 @@ export async function generateMetadata({
       title: article.title,
       description: article.description,
       url: `/rehber/${slug}`,
-      publishedTime: "2026-09-13",
-      modifiedTime: "2026-09-19",
+      publishedTime: article.publishedAt,
+      modifiedTime: article.modifiedAt,
     },
   };
 }
@@ -42,8 +42,8 @@ export default async function ArticlePage({
     "@type": "Article",
     headline: article.title,
     description: article.description,
-    datePublished: "2026-09-13",
-    dateModified: "2026-09-19",
+    datePublished: article.publishedAt,
+    dateModified: article.modifiedAt,
     author: { "@type": "Organization", name: "RealHoroscope Editörlüğü" },
     publisher: { "@type": "Organization", name: "RealHoroscope" },
     mainEntityOfPage: absoluteUrl(`/rehber/${slug}`),
@@ -71,10 +71,14 @@ export default async function ArticlePage({
             <span>Yazar: RealHoroscope Editörlüğü</span>
           </div>
         </header>
+        <nav aria-label="Bu yazıda" className="mt-6 rounded-xl border border-white/10 p-4 text-sm">
+          <p className="font-semibold text-cyan-100">Bu yazıda</p>
+          <ul className="mt-2 space-y-1 text-slate-300">{article.sections.map((section, index) => <li key={section.heading}><a href={`#bolum-${index+1}`} className="underline-offset-4 hover:underline">{section.heading}</a></li>)}</ul>
+        </nav>
         <div className="star-rule my-9" />
         <div className="prose">
-          {article.sections.map((section) => (
-            <section key={section.heading}>
+          {article.sections.map((section, index) => (
+            <section id={`bolum-${index+1}`} className="scroll-mt-28" key={section.heading}>
               <h2>{section.heading}</h2>
               {section.paragraphs.map((p, i) => (
                 <p key={i}>{p}</p>
@@ -88,7 +92,8 @@ export default async function ArticlePage({
               )}
             </section>
           ))}
-          <h2>Kaynaklar</h2>
+          <h2>Kaynaklar ve yöntem bağlantıları</h2>
+          {article.sources ? <ul>{article.sources.map(source => <li key={source.url}><a href={source.url} {...(source.url.startsWith('https://') ? {target:'_blank',rel:'noreferrer'} : {})}>{source.title}</a></li>)}</ul> : <>
           <ul>
             <li>
               <a
@@ -120,10 +125,11 @@ export default async function ArticlePage({
               </li>
             )}
           </ul>
+          </>}
           <p>
-            Astronomik açıklamalar için Astronomy Engine dokümantasyonu, IAU
-            takımyıldız tanımları ve bağımsız efemeris kaynakları temel alınır.
-            Sembolik yorumlar ayrı ve açıkça etiketlenir. Bir hata görürseniz{" "}
+            Dış kaynaklar astronomik ve teknik açıklamalara ilişkindir; kişilik
+            yorumlarını doğrulayan kanıtlar değildir. Kök, Gölge ve Karanlık Ay
+            yorumları RealHoroscope’un kendi okuma çerçevesidir. Bir hata görürseniz{" "}
             <Link href="/iletisim">düzeltme talebi</Link> gönderebilirsiniz.
           </p>
         </div>
@@ -132,6 +138,15 @@ export default async function ArticlePage({
           otomatik günlük burç metni değildir. Kavramı öğretmek ve
           hesaplayıcının sınırlarını açıklamak amacıyla hazırlanmıştır.
         </aside>
+        <nav aria-label="İlgili rehberler" className="mt-6 border-t border-white/10 pt-5">
+          <h2 className="display text-2xl">Okumaya devam edin</h2>
+          <ul className="mt-3 space-y-3 text-violet-200">
+            {(article.related ?? articles.filter(item => item.slug !== slug && item.category === article.category).slice(0,2).map(item => item.slug).concat(['sonucumu-nasil-okurum'])).filter((item,index,all) => item !== slug && all.indexOf(item) === index).slice(0,3).map(relatedSlug => {
+              const related = articleBySlug[relatedSlug];
+              return related ? <li key={relatedSlug}><Link href={`/rehber/${relatedSlug}`}>{related.title} →</Link></li> : null;
+            })}
+          </ul>
+        </nav>
       </article>
       <script
         type="application/ld+json"
